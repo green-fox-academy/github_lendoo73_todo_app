@@ -1,6 +1,7 @@
 package com.greenfoxacademy;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class TodoApp {
 
@@ -13,16 +14,32 @@ public class TodoApp {
         String[] test22 = new String[]{"-a", "Tejet venni"};
         String[] test23  = new String[]{"-a", "Megcsinálni a leckét"};
         String[] test24  = new String[]{"-l"};
-        String[] test3  = new String[]{"-l"};
-        String[] test4  = new String[]{"-a", "Megetetni a papagájt"};
+        String[] list  = new String[]{"-l"};
+        String[] add  = new String[]{"-a", "Megetetni a papagájt"};
         String[] test5  = new String[]{"-a"};
         String[] test6  = new String[]{"-r", "2"};
+        String[] test71  = new String[]{"-r"};
+        String[] test72  = new String[]{"-r", "20"};
+        String[] test73  = new String[]{"-r", "apple"};
+        String[] test8  = new String[]{"get"};
+        String[] test9  = new String[]{"-c", "2"};
+        String[] test101  = new String[]{"-a", "Kutyát sétáltatni"};
+        String[] test102  = new String[]{"-a", "Tejet venni"};
+        String[] test103  = new String[]{"-a", "Megcsinálni a leckét"};
+        String[] changeRow2toChecked  = new String[]{"-c", "2"};
+        String[] changeRow4toChecked  = new String[]{"-c", "4"};
+        String[] removeRow4  = new String[]{"-r", "4"};
+        String[] listAll  = new String[]{"-la"};
 
-        args = test6;
+
+        args = listAll;
 
         String operation = args.length > 0
                 ? args[0]
                 : "";
+
+        String output = "";
+        int numIndex;
 
         switch (operation) {
             case "":
@@ -35,7 +52,7 @@ public class TodoApp {
                 if (ErrorHandler.hasSecondArg(args)) {
                     csvHandler.append(args[1] + ",0");
                 } else {
-                    System.out.println("Nem lehetséges új feladat hozzáadása: nincs megadva a feladat!");
+                    output = "Nem lehetséges új feladat hozzáadása: nincs megadva a feladat!";
                 }
                 break;
             case "-l":
@@ -43,39 +60,34 @@ public class TodoApp {
                 if (csvHandler.notEmpty()) {
                     csvHandler.printWithRowNumber();
                 } else {
-                    System.out.println("Nincs mára tennivalód! :)");
+                    output = "Nincs mára tennivalód! :)";
                 }
                 break;
             case "-r":
             case "-remove":
-                //System.out.println("remove a todo logic");
-                // be kell olvasni a fajlbol
+                output = ErrorHandler.indexChecking(args, csvHandler.numOfLines());
+                if (output.length() > 0) break;
 
+                numIndex = Integer.parseInt(args[1]);
+                csvHandler.removeRow(numIndex);
+                break;
+            case "-c":
+            case "-check":
+                output = ErrorHandler.indexChecking(args, csvHandler.numOfLines());
+                if (output.length() > 0) break;
+
+                numIndex = Integer.parseInt(args[1]);
+                csvHandler.changeCell(numIndex, 2, "1");
+                break;
+            case "-la":
+            case "-listAll":
+                csvHandler.printWithRowNumber(2, "1", " - [X] ", " - [ ] ");
+                break;
             default:
-                //System.out.println("not supported operation");
-
+                output = "Nem támogatott argumentum!";
+                break;
         }
 
-        /*
-        // read todos from file
-                    FileHandler file = new FileHandler("todo.csv");
-                    List<String> lines = file.readAllLines();
-
-                    // build todolist from file
-                    TodoList todos = new TodoList();
-                    for (String line : lines) {
-                        String[] parsedData = line.split(",");
-                        String description = parsedData[0];
-                        boolean isDone = parsedData[1] == "1";
-                        todos.add(new Todo(description, isDone));
-                    }
-
-                    // add new todo to the list:
-                    todos.add(todo);
-
-                    // create striglist from todolist:
-
-                    // save updated todolist to the file:
-         */
+        System.out.println(output);
     }
 }

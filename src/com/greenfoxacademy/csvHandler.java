@@ -44,9 +44,13 @@ public class csvHandler {
             lines = new ArrayList<>();
         }
 
+        lines.add(content);
+        write(lines);
+    }
+
+    public void write( List<String> lines) {
         try {
             Path filePath = Paths.get(getPathName());
-            lines.add(content);
             Files.write(filePath, lines);
         }
         catch (Exception error) {
@@ -59,11 +63,20 @@ public class csvHandler {
     }
 
     public void printWithRowNumber(String prefix) {
+        printWithRowNumber(1, "-1", prefix, prefix);
+    }
+
+    public void printWithRowNumber(int col, String equalsWith, String truePrefix, String falsePrefix) {
+        col -= 1;
         List<String> lines = readAllLines();
 
         for (int row = 0; row < lines.size(); row++) {
             String[] parsedData = lines.get(row).split(",");
             String description = parsedData[0];
+            String prefix = falsePrefix;
+            if (parsedData[col].equals(equalsWith)) {
+                prefix = truePrefix;
+            }
             System.out.println(row + 1 + prefix + description);
         }
     }
@@ -83,5 +96,26 @@ public class csvHandler {
 
     public boolean notEmpty() {
         return isExistsFile() && numOfLines() > 0;
+    }
+
+    public void changeCell(int row, int col, String data) {
+        List<String> lines = readAllLines();
+        String currentRow = getRow(row);
+        String[] currentRowCells = currentRow.split(",");
+        currentRowCells[col - 1] = data;
+        String updatedRow = String.join(",", currentRowCells);
+        lines.set(row - 1, updatedRow);
+        write(lines);
+    }
+
+    public String getRow(int row) {
+        List<String> lines = readAllLines();
+        return lines.get(row - 1);
+    }
+
+    public void removeRow(int row) {
+        List<String> lines = readAllLines();
+        lines.remove(row - 1);
+        write(lines);
     }
 }
