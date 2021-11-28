@@ -30,9 +30,12 @@ public class TodoApp {
         String[] changeRow4toChecked  = new String[]{"-c", "4"};
         String[] removeRow4  = new String[]{"-r", "4"};
         String[] listAll  = new String[]{"-la"};
+        String[] changeRow20toChecked  = new String[]{"-c", "20"};
+        String[] changeRowC  = new String[]{"-c"};
+        String[] changeRowCApple  = new String[]{"-c", "apple"};
 
 
-        args = listAll;
+        args = changeRowCApple;
 
         String operation = args.length > 0
                 ? args[0]
